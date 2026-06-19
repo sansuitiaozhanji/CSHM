@@ -1,0 +1,37 @@
+name: Mirror to Gitee (Safe)
+
+on:
+  push:
+    branches:
+      - '**'
+  delete:
+  create:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show info
+        run: |
+          echo "From: sansuitiaozhanji/CSHM"
+          echo "To:   sk8_quist/CSHM"
+
+      - name: Clone from GitHub
+        run: |
+          rm -rf repo
+          git clone --mirror https://github.com/sansuitiaozhanji/CSHM.git repo
+
+      - name: Push to Gitee (Only branches & tags)
+        env:
+          GITEE_USERNAME: sk8_quist
+          GITEE_REPO: CSHM
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: |
+          cd repo
+
+          git remote add gitee https://${GITEE_USERNAME}:${GITEE_TOKEN}@gitee.com/${GITEE_USERNAME}/${GITEE_REPO}.git \
+            || git remote set-url gitee https://${GITEE_USERNAME}:${GITEE_TOKEN}@gitee.com/${GITEE_USERNAME}/${GITEE_REPO}.git
+
+          # ✅ 只同步分支和标签，绝不碰 Gitee 的隐藏引用
+          git push gitee +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
