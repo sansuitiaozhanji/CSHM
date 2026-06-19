@@ -141,10 +141,7 @@ INSERT INTO `category` (`name`, `sort_order`) VALUES
                                                   ('其他',      99);
 
 -- 6.2 管理员初始账号
--- 密码：admin123（BCrypt 加密）
--- BCrypt 密文由 Spring Security 的 BCryptPasswordEncoder 生成
--- 注意：实际使用时，应先启动 Spring Boot 应用，通过注册接口创建管理员账号，
---       或使用下方密文（该密文对应明文 "admin123"，由标准 BCrypt 算法生成）
+-- 密码：admin123（BCrypt 加密，由 org.mindrot.jbcrypt 生成）
 INSERT INTO `user` (`student_id`, `name`, `email`, `password`, `role`, `status`, `created_at`, `updated_at`)
 VALUES ('admin', '系统管理员', 'admin@campus.edu',
         '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
