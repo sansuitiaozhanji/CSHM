@@ -3,6 +3,7 @@ package com.campus.mapper;
 import com.campus.entity.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserMapper {
@@ -20,6 +21,8 @@ public interface UserMapper {
     int update(User user);
 
     int updatePassword(@Param("id") Long id, @Param("password") String password);
+
+    int updateBalance(@Param("id") Long id, @Param("balance") BigDecimal balance);
 
     List<User> findAll(@Param("keyword") String keyword);
 
