@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.TransactionLogMapper">
+
+    <resultMap id="transactionLogMap" type="com.campus.entity.TransactionLog">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="type" column="type"/>
+        <result property="amount" column="amount"/>
+        <result property="balanceBefore" column="balance_before"/>
+        <result property="balanceAfter" column="balance_after"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.campus.entity.TransactionLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO transaction_log (user_id, order_id, type, amount, balance_before, balance_after, description, created_at)
+        VALUES (#{userId}, #{orderId}, #{type}, #{amount}, #{balanceBefore}, #{balanceAfter}, #{description}, NOW())
+    </insert>
+
+    <select id="findByUserId" resultMap="transactionLogMap">
+        SELECT * FROM transaction_log WHERE user_id = #{userId} ORDER BY created_at DESC
+    </select>
+
+</mapper>

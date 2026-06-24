@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.LogMapper">
+
+    <resultMap id="logMap" type="com.campus.entity.Log">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="actionType" column="action_type"/>
+        <result property="description" column="description"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.campus.entity.Log" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO log (user_id, action_type, description, ip_address, created_at)
+        VALUES (#{userId}, #{actionType}, #{description}, #{ipAddress}, NOW())
+    </insert>
+
+    <select id="findAll" resultMap="logMap">
+        SELECT * FROM log
+        <where>
+            <if test="keyword != null and keyword != ''">
+                description LIKE CONCAT('%', #{keyword}, '%')
+                OR action_type LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="findByUserId" resultMap="logMap">
+        SELECT * FROM log WHERE user_id = #{userId} ORDER BY created_at DESC
+    </select>
+
+    <select id="findByActionType" resultMap="logMap">
+        SELECT * FROM log WHERE action_type = #{actionType} ORDER BY created_at DESC
+    </select>
+
+</mapper>
