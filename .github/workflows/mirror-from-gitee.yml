@@ -1,0 +1,35 @@
+name: Mirror from Gitee (Safe)
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show info
+        run: |
+          echo "From: sk8_quist/CSHM"
+          echo "To:   sansuitiaozhanji/CSHM"
+
+      - name: Clone from Gitee
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: |
+          rm -rf repo
+          git clone --mirror https://sk8_quist:${GITEE_TOKEN}@gitee.com/sk8_quist/CSHM.git repo
+
+      - name: Push to GitHub (Only branches & tags)
+        env:
+          PAT_MIRROR: ${{ secrets.MIRROR_GITHUB_TOKEN }}
+        run: |
+          cd repo
+
+          git remote add github https://x-access-token:${PAT_MIRROR}@github.com/sansuitiaozhanji/CSHM.git \
+            || git remote set-url github https://x-access-token:${PAT_MIRROR}@github.com/sansuitiaozhanji/CSHM.git
+
+          # ✅ 只同步分支和标签，绝不碰 Actions / PR / hidden refs
+          git push github +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*

@@ -1,5 +1,6 @@
 package com.campus.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class User {
@@ -10,6 +11,7 @@ public class User {
     private String password;
     private String phone;
     private String avatar;
+    private BigDecimal balance;
     private Integer role;
     private Integer status;
     private LocalDateTime createdAt;
@@ -29,6 +31,8 @@ public class User {
     public void setPhone(String phone) { this.phone = phone; }
     public String getAvatar() { return avatar; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
+    public BigDecimal getBalance() { return balance; }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
     public Integer getRole() { return role; }
     public void setRole(Integer role) { this.role = role; }
     public Integer getStatus() { return status; }

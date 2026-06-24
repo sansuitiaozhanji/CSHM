@@ -35,10 +35,25 @@
                         <a class="nav-link" href="/my/products"><i class="bi bi-box"></i> 我的发布</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/my/orders/buy"><i class="bi bi-cart"></i> 我的购买</a>
+                        <a class="nav-link" href="/cart"><i class="bi bi-cart"></i> 购物车</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/my/orders/sell"><i class="bi bi-truck"></i> 我的出售</a>
+                        <a class="nav-link" href="/order/buy"><i class="bi bi-bag"></i> 我的购买</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/order/sell"><i class="bi bi-truck"></i> 我的出售</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/favorite"><i class="bi bi-heart"></i> 收藏</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/message"><i class="bi bi-chat-dots"></i> 私信</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/wallet">
+                            <i class="bi bi-wallet2"></i> 钱包
+                            <span class="badge bg-light text-primary">¥${sessionScope.user.balance}</span>
+                        </a>
                     </li>
                     <c:if test="${sessionScope.role == 1}">
                         <li class="nav-item dropdown">
@@ -49,6 +64,7 @@
                                 <li><a class="dropdown-item" href="/admin">数据统计</a></li>
                                 <li><a class="dropdown-item" href="/admin/users">用户管理</a></li>
                                 <li><a class="dropdown-item" href="/admin/products">商品审核</a></li>
+                                <li><a class="dropdown-item" href="/admin/logs">操作日志</a></li>
                             </ul>
                         </li>
                     </c:if>

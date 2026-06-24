@@ -88,21 +88,9 @@
             </c:if>
 
             <c:if test="${not empty sessionScope.user && sessionScope.user.id != product.sellerId && product.status == 1}">
-                <form method="post" action="/order/create">
-                    <input type="hidden" name="productId" value="${product.id}">
-                    <div class="mb-3">
-                        <label for="remark" class="form-label">备注（可选）</label>
-                        <input type="text" class="form-control" id="remark" name="remark" placeholder="可以填写联系方式或其他需求">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="bi bi-cart"></i> 立即购买
-                    </button>
-                </form>
-            </c:if>
-            <c:if test="${product.status != 1 && not empty sessionScope.user && sessionScope.user.id != product.sellerId}">
-                <button class="btn btn-secondary btn-lg w-100" disabled>
-                    ${product.statusText}
-                </button>
+                <a href="/order/create?productId=${product.id}" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-cart"></i> 立即购买
+                </a>
             </c:if>
             <c:if test="${empty sessionScope.user}">
                 <a href="/login" class="btn btn-outline-primary btn-lg w-100">
