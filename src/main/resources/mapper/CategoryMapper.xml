@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.CategoryMapper">
+
+    <resultMap id="categoryMap" type="com.campus.entity.Category">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+
+    <select id="findById" resultMap="categoryMap">
+        SELECT * FROM category WHERE id = #{id}
+    </select>
+
+    <select id="findByName" resultMap="categoryMap">
+        SELECT * FROM category WHERE name = #{name}
+    </select>
+
+    <select id="findAll" resultMap="categoryMap">
+        SELECT * FROM category ORDER BY sort_order ASC
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Category" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO category (name, sort_order) VALUES (#{name}, #{sortOrder})
+    </insert>
+
+    <update id="update" parameterType="com.campus.entity.Category">
+        UPDATE category SET name = #{name}, sort_order = #{sortOrder} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM category WHERE id = #{id}
+    </delete>
+
+</mapper>

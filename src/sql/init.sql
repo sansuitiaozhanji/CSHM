@@ -112,6 +112,7 @@ CREATE TABLE `order` (
     `seller_id`    BIGINT        NOT NULL COMMENT '卖家 ID（FK → user.id）',
     `status`       TINYINT       NOT NULL DEFAULT 0 COMMENT '状态：0-待确认，1-进行中，2-已完成，3-已取消',
     `price`        DECIMAL(10,2) NOT NULL COMMENT '成交价（下单时的商品价格）',
+    `remark`       VARCHAR(255)  DEFAULT NULL COMMENT '买家备注',
     `created_at`   DATETIME      NOT NULL COMMENT '创建时间',
     `updated_at`   DATETIME      NOT NULL COMMENT '更新时间',
     `completed_at` DATETIME      DEFAULT NULL COMMENT '完成时间',

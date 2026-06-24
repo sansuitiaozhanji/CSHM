@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.OrderMapper">
+
+    <resultMap id="orderMap" type="com.campus.entity.Order">
+        <id property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="buyerId" column="buyer_id"/>
+        <result property="sellerId" column="seller_id"/>
+        <result property="price" column="price"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="orderDetailMap" type="com.campus.entity.Order" extends="orderMap">
+        <association property="product" javaType="com.campus.entity.Product">
+            <id property="id" column="product_order_id"/>
+            <result property="title" column="product_title"/>
+            <result property="price" column="product_price"/>
+            <result property="status" column="product_status"/>
+        </association>
+        <association property="buyer" javaType="com.campus.entity.User">
+            <id property="id" column="buyer_user_id"/>
+            <result property="name" column="buyer_name"/>
+            <result property="studentId" column="buyer_student_id"/>
+            <result property="phone" column="buyer_phone"/>
+            <result property="avatar" column="buyer_avatar"/>
+        </association>
+        <association property="seller" javaType="com.campus.entity.User">
+            <id property="id" column="seller_user_id"/>
+            <result property="name" column="seller_name"/>
+            <result property="studentId" column="seller_student_id"/>
+            <result property="phone" column="seller_phone"/>
+            <result property="avatar" column="seller_avatar"/>
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="orderDetailMap">
+        SELECT o.*,
+               p.id as product_order_id, p.title as product_title, p.price as product_price, p.status as product_status,
+               b.id as buyer_user_id, b.name as buyer_name, b.student_id as buyer_student_id,
+               b.phone as buyer_phone, b.avatar as buyer_avatar,
+               s.id as seller_user_id, s.name as seller_name, s.student_id as seller_student_id,
+               s.phone as seller_phone, s.avatar as seller_avatar
+        FROM `order` o
+        LEFT JOIN product p ON o.product_id = p.id
+        LEFT JOIN `user` b ON o.buyer_id = b.id
+        LEFT JOIN `user` s ON o.seller_id = s.id
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="findByBuyerId" resultMap="orderDetailMap">
+        SELECT o.*,
+               p.id as product_order_id, p.title as product_title, p.price as product_price, p.status as product_status,
+               b.id as buyer_user_id, b.name as buyer_name, b.student_id as buyer_student_id,
+               b.phone as buyer_phone, b.avatar as buyer_avatar,
+               s.id as seller_user_id, s.name as seller_name, s.student_id as seller_student_id,
+               s.phone as seller_phone, s.avatar as seller_avatar,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as product_first_image_url
+        FROM `order` o
+        LEFT JOIN product p ON o.product_id = p.id
+        LEFT JOIN `user` b ON o.buyer_id = b.id
+        LEFT JOIN `user` s ON o.seller_id = s.id
+        WHERE o.buyer_id = #{buyerId}
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="findBySellerId" resultMap="orderDetailMap">
+        SELECT o.*,
+               p.id as product_order_id, p.title as product_title, p.price as product_price, p.status as product_status,
+               b.id as buyer_user_id, b.name as buyer_name, b.student_id as buyer_student_id,
+               b.phone as buyer_phone, b.avatar as buyer_avatar,
+               s.id as seller_user_id, s.name as seller_name, s.student_id as seller_student_id,
+               s.phone as seller_phone, s.avatar as seller_avatar,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as product_first_image_url
+        FROM `order` o
+        LEFT JOIN product p ON o.product_id = p.id
+        LEFT JOIN `user` b ON o.buyer_id = b.id
+        LEFT JOIN `user` s ON o.seller_id = s.id
+        WHERE o.seller_id = #{sellerId}
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="findActiveByProductId" resultMap="orderMap">
+        SELECT * FROM `order`
+        WHERE product_id = #{productId} AND status IN (0, 1)
+        LIMIT 1
+    </select>
+
+    <select id="findByProductId" resultMap="orderMap">
+        SELECT * FROM `order`
+        WHERE product_id = #{productId}
+        ORDER BY created_at DESC
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `order` (product_id, buyer_id, seller_id, price, status, remark, created_at, updated_at)
+        VALUES (#{productId}, #{buyerId}, #{sellerId}, #{price}, 0, #{remark}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.campus.entity.Order">
+        UPDATE `order`
+        SET status = #{status}, remark = #{remark}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE `order`
+        SET status = #{status}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM `order` WHERE id = #{id}
+    </delete>
+
+</mapper>
