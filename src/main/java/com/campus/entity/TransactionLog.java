@@ -2,8 +2,11 @@ package com.campus.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TransactionLog {
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private Long id;
     private Long userId;
     private Long orderId;
@@ -32,4 +35,8 @@ public class TransactionLog {
     public void setDescription(String description) { this.description = description; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getCreatedAtStr() {
+        return createdAt != null ? createdAt.format(FMT) : "";
+    }
 }

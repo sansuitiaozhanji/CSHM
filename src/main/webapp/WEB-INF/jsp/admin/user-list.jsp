@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../common/header.jsp" %>
 <div class="container py-4">
     <h3 class="mb-4">用户管理</h3>
@@ -73,7 +72,7 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td><fmt:formatDate value="${u.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
+                                <td>${u.createdAtStr}</td>
                                 <td>
                                     <c:if test="${u.role != 1}">
                                         <form action="/admin/users/${u.id}/toggle" method="post" style="display:inline;">
