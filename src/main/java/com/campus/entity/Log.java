@@ -1,8 +1,11 @@
 package com.campus.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Log {
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private Long id;
     private Long userId;
     private String actionType;
@@ -22,4 +25,8 @@ public class Log {
     public void setIpAddress(String ipAddress) { this.ipAddress = ipAddress; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getCreatedAtStr() {
+        return createdAt != null ? createdAt.format(FMT) : "";
+    }
 }

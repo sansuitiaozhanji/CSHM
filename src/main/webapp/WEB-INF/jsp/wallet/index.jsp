@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../common/header.jsp" %>
 <div class="container py-4">
     <h3 class="mb-4"><i class="bi bi-wallet2"></i> 我的钱包</h3>
@@ -61,7 +60,7 @@
                                 <td>¥${t.balanceBefore}</td>
                                 <td>¥${t.balanceAfter}</td>
                                 <td>${t.description}</td>
-                                <td><fmt:formatDate value="${t.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                <td>${t.createdAtStr}</td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty transactions}">

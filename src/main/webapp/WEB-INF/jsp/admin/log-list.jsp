@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../common/header.jsp" %>
 <div class="container py-4">
     <h3 class="mb-4"><i class="bi bi-journal-text"></i> 操作日志</h3>
@@ -56,7 +55,7 @@
                                 </td>
                                 <td>${log.description}</td>
                                 <td>${log.ipAddress}</td>
-                                <td><fmt:formatDate value="${log.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                <td>${log.createdAtStr}</td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty logs}">
