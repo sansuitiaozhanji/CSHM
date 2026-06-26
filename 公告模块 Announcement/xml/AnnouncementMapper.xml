@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.AnnouncementMapper">
+    <resultMap id="AnnouncementMap" type="com.entity.Announcement">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="is_top" property="isTop"/>
+        <result column="status" property="status"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="create_admin" property="createAdmin"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="selectFrontList" resultMap="AnnouncementMap">
+        SELECT * FROM announcement
+        WHERE status = 1
+        ORDER BY is_top DESC, publish_time DESC
+    </select>
+
+    <select id="selectAll" resultMap="AnnouncementMap">
+        SELECT * FROM announcement ORDER BY publish_time DESC
+        LIMIT #{offset},#{limit}
+    </select>
+
+    <select id="selectById" resultMap="AnnouncementMap">
+        SELECT * FROM announcement WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO announcement(title,content,is_top,status,publish_time,create_admin,create_time)
+        VALUES(#{title},#{content},#{isTop},#{status},#{publishTime},#{createAdmin},NOW())
+    </insert>
+
+    <update id="update">
+        UPDATE announcement SET
+            title=#{title},content=#{content},is_top=#{isTop},status=#{status},publish_time=#{publishTime}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM announcement WHERE id=#{id}
+    </delete>
+</mapper>
