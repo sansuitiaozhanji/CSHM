@@ -33,33 +33,48 @@
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
-                        <div class="col-sm-3 text-muted">订单编号</div>
-                        <div class="col-sm-9">#${order.id}</div>
+                        <div class="col-sm-4"><strong>订单编号：</strong></div>
+                        <div class="col-sm-8">#${order.id}</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3 text-muted">商品</div>
-                        <div class="col-sm-9">
-                            <a href="/product/${order.productId}" class="text-decoration-none">${order.product.title}</a>
+                        <div class="col-sm-4"><strong>商品：</strong></div>
+                        <div class="col-sm-8">
+                            <c:if test="${not empty order.product}">
+                                <a href="/product/${order.productId}" class="text-decoration-none">${order.product.title}</a>
+                            </c:if>
+                            <c:if test="${empty order.product}">
+                                商品已下架
+                            </c:if>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3 text-muted">价格</div>
-                        <div class="col-sm-9 text-danger fw-bold fs-4">¥${order.price}</div>
+                        <div class="col-sm-4"><strong>单价：</strong></div>
+                        <div class="col-sm-8 text-danger fw-bold">¥${order.price}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>数量：</strong></div>
+                        <div class="col-sm-8">${order.quantity}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>总价：</strong></div>
+                        <div class="col-sm-8 text-danger fw-bold fs-4">¥${order.totalPrice}</div>
                     </div>
                     <c:if test="${not empty order.remark}">
                         <div class="row mb-3">
-                            <div class="col-sm-3 text-muted">备注</div>
-                            <div class="col-sm-9">${order.remark}</div>
+                            <div class="col-sm-4"><strong>备注：</strong></div>
+                            <div class="col-sm-8">${order.remark}</div>
                         </div>
                     </c:if>
                     <div class="row mb-3">
-                        <div class="col-sm-3 text-muted">下单时间</div>
-                        <div class="col-sm-9">${order.createdAt}</div>
+                        <div class="col-sm-4"><strong>下单时间：</strong></div>
+                        <div class="col-sm-8">${order.createdAt}</div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-3 text-muted">更新时间</div>
-                        <div class="col-sm-9">${order.updatedAt}</div>
-                    </div>
+                    <c:if test="${not empty order.completedAt}">
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>完成时间：</strong></div>
+                            <div class="col-sm-8">${order.completedAt}</div>
+                        </div>
+                    </c:if>
                 </div>
             </div>
 
@@ -85,6 +100,11 @@
                         </button>
                     </form>
                 </c:if>
+                <c:if test="${order.status == 2 && order.buyerId == currentUserId}">
+                    <a href="/order/${order.id}/review" class="btn btn-primary">
+                        <i class="bi bi-star"></i> 发表评价
+                    </a>
+                </c:if>
             </div>
         </div>
 
@@ -95,19 +115,21 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <c:if test="${not empty order.buyer.avatar}">
+                        <c:if test="${not empty order.buyer && not empty order.buyer.avatar}">
                             <img src="${order.buyer.avatar}" alt="头像" class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;">
                         </c:if>
-                        <c:if test="${empty order.buyer.avatar}">
+                        <c:if test="${empty order.buyer || empty order.buyer.avatar}">
                             <div class="rounded-circle me-3 bg-secondary d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
                                 <i class="bi bi-person text-white"></i>
                             </div>
                         </c:if>
                         <div>
-                            <div class="fw-bold">${order.buyer.name}</div>
-                            <div class="small text-muted">学号：${order.buyer.studentId}</div>
-                            <c:if test="${order.sellerId == currentUserId}">
-                                <div class="small">手机：${order.buyer.phone}</div>
+                            <c:if test="${not empty order.buyer}">
+                                <div class="fw-bold">${order.buyer.name}</div>
+                                <div class="small text-muted">学号：${order.buyer.studentId}</div>
+                                <c:if test="${order.sellerId == currentUserId && not empty order.buyer.phone}">
+                                    <div class="small">手机：${order.buyer.phone}</div>
+                                </c:if>
                             </c:if>
                         </div>
                     </div>
@@ -120,19 +142,21 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <c:if test="${not empty order.seller.avatar}">
+                        <c:if test="${not empty order.seller && not empty order.seller.avatar}">
                             <img src="${order.seller.avatar}" alt="头像" class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;">
                         </c:if>
-                        <c:if test="${empty order.seller.avatar}">
+                        <c:if test="${empty order.seller || empty order.seller.avatar}">
                             <div class="rounded-circle me-3 bg-secondary d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
                                 <i class="bi bi-person text-white"></i>
                             </div>
                         </c:if>
                         <div>
-                            <div class="fw-bold">${order.seller.name}</div>
-                            <div class="small text-muted">学号：${order.seller.studentId}</div>
-                            <c:if test="${order.buyerId == currentUserId}">
-                                <div class="small">手机：${order.seller.phone}</div>
+                            <c:if test="${not empty order.seller}">
+                                <div class="fw-bold">${order.seller.name}</div>
+                                <div class="small text-muted">学号：${order.seller.studentId}</div>
+                                <c:if test="${order.buyerId == currentUserId && not empty order.seller.phone}">
+                                    <div class="small">手机：${order.seller.phone}</div>
+                                </c:if>
                             </c:if>
                         </div>
                     </div>

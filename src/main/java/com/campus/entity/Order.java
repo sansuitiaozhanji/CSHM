@@ -8,11 +8,14 @@ public class Order {
     private Long productId;
     private Long buyerId;
     private Long sellerId;
+    private Integer quantity;
     private BigDecimal price;
+    private BigDecimal totalPrice;
     private Integer status;
     private String remark;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime completedAt;
 
     // 关联字段（非数据库字段）
     private Product product;
@@ -27,8 +30,12 @@ public class Order {
     public void setBuyerId(Long buyerId) { this.buyerId = buyerId; }
     public Long getSellerId() { return sellerId; }
     public void setSellerId(Long sellerId) { this.sellerId = sellerId; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
+    public BigDecimal getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
     public Integer getStatus() { return status; }
     public void setStatus(Integer status) { this.status = status; }
     public String getRemark() { return remark; }
@@ -37,6 +44,8 @@ public class Order {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
     public Product getProduct() { return product; }
     public void setProduct(Product product) { this.product = product; }
     public User getBuyer() { return buyer; }
