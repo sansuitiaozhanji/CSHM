@@ -7,6 +7,7 @@ import com.campus.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -55,7 +56,9 @@ public class OrderService {
         order.setProductId(productId);
         order.setBuyerId(buyerId);
         order.setSellerId(product.getSellerId());
+        order.setQuantity(1);
         order.setPrice(product.getPrice());
+        order.setTotalPrice(product.getPrice());
         order.setRemark(remark);
 
         orderMapper.insert(order);

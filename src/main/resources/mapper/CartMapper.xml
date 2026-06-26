@@ -1,7 +1,74 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.campus.mapper.CartMapper">
+
+    <resultMap id="cartMap" type="com.campus.entity.Cart">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="cartDetailMap" type="com.campus.entity.Cart" extends="cartMap">
+        <association property="product" javaType="com.campus.entity.Product">
+            <id property="id" column="cart_product_id"/>
+            <result property="title" column="cart_product_title"/>
+            <result property="price" column="cart_product_price"/>
+            <result property="status" column="cart_product_status"/>
+            <result property="sellerId" column="cart_product_seller_id"/>
+            <result property="condition" column="cart_product_condition"/>
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="cartDetailMap">
+        SELECT c.*,
+               p.id as cart_product_id, p.title as cart_product_title, p.price as cart_product_price,
+               p.status as cart_product_status, p.seller_id as cart_product_seller_id, p.condition as cart_product_condition
+        FROM cart c
+        LEFT JOIN product p ON c.product_id = p.id
+        WHERE c.id = #{id}
+    </select>
+
+    <select id="findByUserId" resultMap="cartDetailMap">
+        SELECT c.*,
+               p.id as cart_product_id, p.title as cart_product_title, p.price as cart_product_price,
+               p.status as cart_product_status, p.seller_id as cart_product_seller_id, p.condition as cart_product_condition,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
+        FROM cart c
+        LEFT JOIN product p ON c.product_id = p.id
+        WHERE c.user_id = #{userId}
+        ORDER BY c.created_at DESC
+    </select>
+
+    <select id="findByUserIdAndProductId" resultMap="cartMap">
+        SELECT * FROM cart WHERE user_id = #{userId} AND product_id = #{productId}
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Cart" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cart (user_id, product_id, quantity, created_at)
+        VALUES (#{userId}, #{productId}, #{quantity}, NOW())
+    </insert>
+
+    <update id="update" parameterType="com.campus.entity.Cart">
+        UPDATE cart SET quantity = #{quantity} WHERE id = #{id}
+    </update>
+
+    <update id="updateQuantity">
+        UPDATE cart SET quantity = #{quantity} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM cart WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByUserId">
+        DELETE FROM cart WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByUserIdAndProductId">
+        DELETE FROM cart WHERE user_id = #{userId} AND product_id = #{productId}
+    </delete>
 
 </mapper>
