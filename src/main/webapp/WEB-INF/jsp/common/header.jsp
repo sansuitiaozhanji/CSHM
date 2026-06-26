@@ -27,6 +27,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/"><i class="bi bi-house"></i> 首页</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/announcement"><i class="bi bi-megaphone"></i> 公告</a>
+                </li>
                 <c:if test="${sessionScope.user != null}">
                     <li class="nav-item">
                         <a class="nav-link" href="/product/create"><i class="bi bi-plus-circle"></i> 发布商品</a>
@@ -53,6 +56,11 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/admin/reviews">评价管理</a></li>
+                                <li><a class="dropdown-item" href="/admin">数据统计</a></li>
+                                <li><a class="dropdown-item" href="/admin/users">用户管理</a></li>
+                                <li><a class="dropdown-item" href="/admin/products">商品审核</a></li>
+                                <li><a class="dropdown-item" href="/admin/content">内容管理</a></li>
+                                <li><a class="dropdown-item" href="/admin/logs">操作日志</a></li>
                             </ul>
                         </li>
                     </c:if>
@@ -74,10 +82,10 @@
                     </c:when>
                     <c:otherwise>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login">登录</a>
+                            <a class="nav-link" href="/login"><i class="bi bi-box-arrow-in-right"></i> 登录</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/register">注册</a>
+                            <a class="nav-link" href="/register"><i class="bi bi-person-plus"></i> 注册</a>
                         </li>
                     </c:otherwise>
                 </c:choose>
