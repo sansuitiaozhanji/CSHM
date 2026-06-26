@@ -41,15 +41,24 @@
                         <a class="nav-link" href="/cart"><i class="bi bi-cart"></i> 购物车</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/my/orders/buy"><i class="bi bi-bag"></i> 我的购买</a>
+                        <a class="nav-link" href="/order/buy"><i class="bi bi-bag"></i> 我的购买</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/my/orders/sell"><i class="bi bi-truck"></i> 我的出售</a>
+                        <a class="nav-link" href="/order/sell"><i class="bi bi-truck"></i> 我的出售</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/my/favorites"><i class="bi bi-heart"></i> 我的收藏</a>
+                        <a class="nav-link" href="/favorite"><i class="bi bi-heart"></i> 收藏</a>
                     </li>
-                    <c:if test="${sessionScope.user.role == 1}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/message"><i class="bi bi-chat-dots"></i> 私信</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/wallet">
+                            <i class="bi bi-wallet2"></i> 钱包
+                            <span class="badge bg-light text-primary">¥${sessionScope.user.balance}</span>
+                        </a>
+                    </li>
+                    <c:if test="${sessionScope.role == 1}">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-shield-lock"></i> 管理后台
@@ -74,7 +83,7 @@
                                 <i class="bi bi-person-circle"></i> ${sessionScope.user.name}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/user/profile">个人中心</a></li>
+                                <li><a class="dropdown-item" href="/profile">个人中心</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/logout">退出登录</a></li>
                             </ul>
