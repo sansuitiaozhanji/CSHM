@@ -19,6 +19,10 @@ public class CarouselService {
         return carouselMapper.findAll();
     }
 
+    public List<Carousel> findActive() {
+        return carouselMapper.findActive();
+    }
+
     public void save(Carousel carousel) {
         if (carousel.getId() != null) {
             carouselMapper.update(carousel);

@@ -6,6 +6,50 @@
         <p class="lead text-muted">在这里发现校园好物，让闲置流转起来</p>
     </div>
 
+    <!-- 轮播图 -->
+    <c:if test="${not empty carousels}">
+        <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <c:forEach items="${carousels}" var="carousel" varStatus="s">
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="${s.index}"
+                            class="${s.first ? 'active' : ''}" aria-current="${s.first ? 'true' : ''}"
+                            aria-label="Slide ${s.index + 1}"></button>
+                </c:forEach>
+            </div>
+            <div class="carousel-inner rounded shadow">
+                <c:forEach items="${carousels}" var="carousel" varStatus="s">
+                    <div class="carousel-item ${s.first ? 'active' : ''}">
+                        <c:if test="${not empty carousel.linkUrl}">
+                            <a href="${carousel.linkUrl}" target="_blank">
+                                <img src="${carousel.imageUrl}" class="d-block w-100"
+                                     style="height: 350px; object-fit: cover;" alt="${carousel.title}">
+                            </a>
+                        </c:if>
+                        <c:if test="${empty carousel.linkUrl}">
+                            <img src="${carousel.imageUrl}" class="d-block w-100"
+                                 style="height: 350px; object-fit: cover;" alt="${carousel.title}">
+                        </c:if>
+                        <c:if test="${not empty carousel.title}">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>${carousel.title}</h5>
+                            </div>
+                        </c:if>
+                    </div>
+                </c:forEach>
+            </div>
+            <c:if test="${carousels.size() > 1}">
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">上一张</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">下一张</span>
+                </button>
+            </c:if>
+        </div>
+    </c:if>
+
     <!-- 搜索和筛选 -->
     <div class="card mb-4">
         <div class="card-body">

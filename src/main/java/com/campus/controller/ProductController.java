@@ -5,6 +5,7 @@ import com.campus.common.Result;
 import com.campus.entity.Category;
 import com.campus.entity.Product;
 import com.campus.entity.User;
+import com.campus.service.CarouselService;
 import com.campus.service.CategoryService;
 import com.campus.service.FileService;
 import com.campus.service.ProductService;
@@ -23,11 +24,14 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final FileService fileService;
+    private final CarouselService carouselService;
 
-    public ProductController(ProductService productService, CategoryService categoryService, FileService fileService) {
+    public ProductController(ProductService productService, CategoryService categoryService,
+                             FileService fileService, CarouselService carouselService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.fileService = fileService;
+        this.carouselService = carouselService;
     }
 
     @GetMapping("/")
@@ -42,6 +46,7 @@ public class ProductController {
         mv.addObject("categories", categories);
         mv.addObject("keyword", keyword);
         mv.addObject("categoryId", categoryId);
+        mv.addObject("carousels", carouselService.findActive());
         return mv;
     }
 
