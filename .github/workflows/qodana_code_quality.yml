@@ -10,9 +10,7 @@ on:
   push:
     branches:
       - master
-      - module-A-user
-      - module-B-product
-      - module-C-order
+      - develop
 
 jobs:
   qodana:
