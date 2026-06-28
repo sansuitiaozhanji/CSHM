@@ -1,7 +1,131 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.campus.mapper.OrderMapper">
+
+    <resultMap id="orderMap" type="com.campus.entity.Order">
+        <id property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="buyerId" column="buyer_id"/>
+        <result property="sellerId" column="seller_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="completedAt" column="completed_at"/>
+    </resultMap>
+
+    <resultMap id="orderDetailMap" type="com.campus.entity.Order" extends="orderMap">
+        <association property="product" javaType="com.campus.entity.Product">
+            <id property="id" column="ord_product_id"/>
+            <result property="title" column="ord_product_title"/>
+            <result property="status" column="ord_product_status"/>
+            <result property="firstImageUrl" column="firstImageUrl"/>
+        </association>
+        <association property="buyer" javaType="com.campus.entity.User">
+            <id property="id" column="ord_buyer_id"/>
+            <result property="username" column="ord_buyer_username"/>
+            <result property="phone" column="ord_buyer_phone"/>
+            <result property="avatar" column="ord_buyer_avatar"/>
+        </association>
+        <association property="seller" javaType="com.campus.entity.User">
+            <id property="id" column="ord_seller_id"/>
+            <result property="username" column="ord_seller_username"/>
+            <result property="phone" column="ord_seller_phone"/>
+            <result property="avatar" column="ord_seller_avatar"/>
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="orderDetailMap">
+        SELECT o.*,
+               p.id as ord_product_id, p.title as ord_product_title, p.status as ord_product_status,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl,
+               b.id as ord_buyer_id, b.username as ord_buyer_username,
+               b.phone as ord_buyer_phone, b.avatar as ord_buyer_avatar,
+               s.id as ord_seller_id, s.username as ord_seller_username,
+               s.phone as ord_seller_phone, s.avatar as ord_seller_avatar
+        FROM `order` o
+        LEFT JOIN product p ON o.product_id = p.id
+        LEFT JOIN `user` b ON o.buyer_id = b.id
+        LEFT JOIN `user` s ON o.seller_id = s.id
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="findByBuyerId" resultMap="orderDetailMap">
+        SELECT o.*,
+               p.id as ord_product_id, p.title as ord_product_title, p.status as ord_product_status,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
+        FROM `order` o
+        LEFT JOIN product p ON o.product_id = p.id
+        WHERE o.buyer_id = #{buyerId}
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="findBySellerId" resultMap="orderDetailMap">
+        SELECT o.*,
+               p.id as ord_product_id, p.title as ord_product_title, p.status as ord_product_status,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
+        FROM `order` o
+        LEFT JOIN product p ON o.product_id = p.id
+        WHERE o.seller_id = #{sellerId}
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="findActiveByProductId" resultMap="orderMap">
+        SELECT * FROM `order`
+        WHERE product_id = #{productId} AND status IN (0, 1)
+        LIMIT 1
+    </select>
+
+    <select id="findByProductId" resultMap="orderMap">
+        SELECT * FROM `order` WHERE product_id = #{productId}
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `order` (product_id, buyer_id, seller_id, quantity, price, total_price, status, created_at, updated_at)
+        VALUES (#{productId}, #{buyerId}, #{sellerId}, #{quantity}, #{price}, #{totalPrice}, 0, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.campus.entity.Order">
+        UPDATE `order`
+        SET status = #{status}, updated_at = NOW()
+        <choose>
+            <when test="status == 2">
+                , completed_at = NOW()
+            </when>
+            <otherwise>
+                , completed_at = NULL
+            </otherwise>
+        </choose>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE `order`
+        SET status = #{status}, updated_at = NOW()
+        <choose>
+            <when test="status == 2">
+                , completed_at = NOW()
+            </when>
+            <otherwise>
+                , completed_at = NULL
+            </otherwise>
+        </choose>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM `order` WHERE id = #{id}
+    </delete>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM `order`
+    </select>
+
+    <select id="countByStatus" resultType="long">
+        SELECT COUNT(*) FROM `order` WHERE status = #{status}
+    </select>
 
 </mapper>

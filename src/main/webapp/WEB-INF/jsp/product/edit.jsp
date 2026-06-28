@@ -139,16 +139,14 @@ function uploadImage() {
 function addImage(url) {
     const div = document.createElement('div');
     div.className = 'col-md-4';
-    div.innerHTML = `
-        <div class="position-relative">
-            <img src="${url}" class="img-fluid rounded">
-            <input type="hidden" name="imageUrls" value="${url}">
-            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                    onclick="this.parentElement.parentElement.remove()">
-                <i class="bi bi-x-lg"></i>
-            </button>
-        </div>
-    `;
+    div.innerHTML =
+        '<div class="position-relative">' +
+        '<img src="' + url + '" class="img-fluid rounded">' +
+        '<input type="hidden" name="imageUrls" value="' + url + '">' +
+        '<button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" onclick="this.parentElement.parentElement.remove()">' +
+        '<i class="bi bi-x-lg"></i>' +
+        '</button>' +
+        '</div>';
     document.getElementById('imageList').appendChild(div);
 }
 </script>

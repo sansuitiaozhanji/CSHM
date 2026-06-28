@@ -13,10 +13,10 @@ import java.util.UUID;
 @Service
 public class FileService {
 
-    @Value("${file.upload-dir:uploads}")
+    @Value("${file.upload-dir}")
     private String uploadDir;
 
-    @Value("${file.access-url:/uploads}")
+    @Value("${file.access-url}")
     private String accessUrl;
 
     public String upload(MultipartFile file) throws IOException {

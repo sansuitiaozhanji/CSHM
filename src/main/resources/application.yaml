@@ -1,6 +1,10 @@
 spring:
   application:
     name: CSHM
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:mysql://localhost:3306/campus_secondhand?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
@@ -12,7 +16,7 @@ spring:
       suffix: .jsp
   web:
     resources:
-      static-locations: classpath:/static/,file:uploads/
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
@@ -27,3 +31,8 @@ mybatis:
 
 server:
   port: 8080
+
+file:
+  upload-dir: D:/cshm-uploads
+  access-url: /uploads
+

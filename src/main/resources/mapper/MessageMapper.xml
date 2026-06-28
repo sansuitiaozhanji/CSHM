@@ -1,7 +1,81 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.campus.mapper.MessageMapper">
+
+    <resultMap id="messageMap" type="com.campus.entity.Message">
+        <id property="id" column="id"/>
+        <result property="sessionId" column="session_id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="content" column="content"/>
+        <result property="isRead" column="is_read"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="messageDetailMap" type="com.campus.entity.Message" extends="messageMap">
+        <association property="sender" javaType="com.campus.entity.User">
+            <id property="id" column="sender_user_id"/>
+            <result property="username" column="sender_user_username"/>
+            <result property="avatar" column="sender_user_avatar"/>
+        </association>
+        <association property="receiver" javaType="com.campus.entity.User">
+            <id property="id" column="receiver_user_id"/>
+            <result property="username" column="receiver_user_username"/>
+            <result property="avatar" column="receiver_user_avatar"/>
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="messageDetailMap">
+        SELECT m.*,
+               s.id as sender_user_id, s.username as sender_user_username, s.avatar as sender_user_avatar,
+               r.id as receiver_user_id, r.username as receiver_user_username, r.avatar as receiver_user_avatar
+        FROM message m
+        LEFT JOIN `user` s ON m.sender_id = s.id
+        LEFT JOIN `user` r ON m.receiver_id = r.id
+        WHERE m.id = #{id}
+    </select>
+
+    <select id="findBySessionId" resultMap="messageDetailMap">
+        SELECT m.*,
+               s.id as sender_user_id, s.username as sender_user_username, s.avatar as sender_user_avatar,
+               r.id as receiver_user_id, r.username as receiver_user_username, r.avatar as receiver_user_avatar
+        FROM message m
+        LEFT JOIN `user` s ON m.sender_id = s.id
+        LEFT JOIN `user` r ON m.receiver_id = r.id
+        WHERE m.session_id = #{sessionId}
+        ORDER BY m.created_at ASC
+    </select>
+
+    <select id="findSessionsByUserId" resultMap="messageDetailMap">
+        SELECT m.*,
+               s.id as sender_user_id, s.username as sender_user_username, s.avatar as sender_user_avatar,
+               r.id as receiver_user_id, r.username as receiver_user_username, r.avatar as receiver_user_avatar
+        FROM message m
+        LEFT JOIN `user` s ON m.sender_id = s.id
+        LEFT JOIN `user` r ON m.receiver_id = r.id
+        WHERE m.id IN (
+            SELECT MAX(id) FROM message
+            WHERE sender_id = #{userId} OR receiver_id = #{userId}
+            GROUP BY session_id
+        )
+        ORDER BY m.created_at DESC
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Message" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message (session_id, sender_id, receiver_id, content, is_read, created_at)
+        VALUES (#{sessionId}, #{senderId}, #{receiverId}, #{content}, 0, NOW())
+    </insert>
+
+    <update id="markAsRead">
+        UPDATE message
+        SET is_read = 1
+        WHERE session_id = #{sessionId} AND receiver_id = #{userId} AND is_read = 0
+    </update>
+
+    <select id="countUnread" resultType="int">
+        SELECT COUNT(*) FROM message
+        WHERE receiver_id = #{userId} AND is_read = 0
+    </select>
 
 </mapper>

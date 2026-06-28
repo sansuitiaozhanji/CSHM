@@ -1,7 +1,62 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.campus.mapper.FavoriteMapper">
+
+    <resultMap id="favoriteMap" type="com.campus.entity.Favorite">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="favoriteDetailMap" type="com.campus.entity.Favorite" extends="favoriteMap">
+        <association property="product" javaType="com.campus.entity.Product">
+            <id property="id" column="fav_product_id"/>
+            <result property="title" column="fav_product_title"/>
+            <result property="price" column="fav_product_price"/>
+            <result property="status" column="fav_product_status"/>
+            <result property="sellerId" column="fav_product_seller_id"/>
+            <result property="firstImageUrl" column="firstImageUrl"/>
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="favoriteDetailMap">
+        SELECT f.*,
+               p.id as fav_product_id, p.title as fav_product_title, p.price as fav_product_price,
+               p.status as fav_product_status, p.seller_id as fav_product_seller_id,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
+        FROM favorite f
+        LEFT JOIN product p ON f.product_id = p.id
+        WHERE f.id = #{id}
+    </select>
+
+    <select id="findByUserId" resultMap="favoriteDetailMap">
+        SELECT f.*,
+               p.id as fav_product_id, p.title as fav_product_title, p.price as fav_product_price,
+               p.status as fav_product_status, p.seller_id as fav_product_seller_id,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
+        FROM favorite f
+        LEFT JOIN product p ON f.product_id = p.id
+        WHERE f.user_id = #{userId}
+        ORDER BY f.created_at DESC
+    </select>
+
+    <select id="findByUserIdAndProductId" resultMap="favoriteMap">
+        SELECT * FROM favorite WHERE user_id = #{userId} AND product_id = #{productId}
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Favorite" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO favorite (user_id, product_id, created_at)
+        VALUES (#{userId}, #{productId}, NOW())
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM favorite WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByUserIdAndProductId">
+        DELETE FROM favorite WHERE user_id = #{userId} AND product_id = #{productId}
+    </delete>
 
 </mapper>

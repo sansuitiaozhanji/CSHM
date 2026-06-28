@@ -14,25 +14,17 @@
                     </c:if>
                     <form action="/register" method="post" onsubmit="return validateForm()">
                         <div class="mb-3">
-                            <label for="studentId" class="form-label">学号 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="studentId" name="studentId"
-                                   placeholder="请输入学号" value="${param.studentId}" required>
+                            <label for="username" class="form-label">用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                   placeholder="以字母开头，3-20位字母或数字" value="${param.username}" required
+                                   pattern="[a-zA-Z][a-zA-Z0-9]{2,19}" maxlength="20">
+                            <div class="form-text">以字母开头，3-20位字母或数字组合</div>
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">真实姓名 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   placeholder="请输入真实姓名" value="${param.name}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">学校邮箱 <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                   placeholder="example@xx.edu.cn" value="${param.email}" required>
-                            <div class="form-text">请使用学校邮箱（@xx.edu.cn 格式）</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">联系电话</label>
+                            <label for="phone" class="form-label">手机号 <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="phone" name="phone"
-                                   placeholder="请输入联系电话" value="${param.phone}">
+                                   placeholder="请输入11位手机号" value="${param.phone}" required
+                                   pattern="\d{11}" maxlength="11">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">密码 <span class="text-danger">*</span></label>

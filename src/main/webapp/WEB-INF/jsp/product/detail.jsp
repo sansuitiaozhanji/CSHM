@@ -64,16 +64,12 @@
                         <i class="bi bi-person-circle"></i> 卖家信息
                     </h5>
                     <div class="row">
-                        <div class="col-sm-4"><strong>姓名：</strong></div>
-                        <div class="col-sm-8">${product.seller.name}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4"><strong>学号：</strong></div>
-                        <div class="col-sm-8">${product.seller.studentId}</div>
+                        <div class="col-sm-4"><strong>用户名：</strong></div>
+                        <div class="col-sm-8">${product.seller.username}</div>
                     </div>
                     <c:if test="${not empty product.seller.phone}">
                         <div class="row">
-                            <div class="col-sm-4"><strong>联系电话：</strong></div>
+                            <div class="col-sm-4"><strong>手机号：</strong></div>
                             <div class="col-sm-8">${product.seller.phone}</div>
                         </div>
                     </c:if>
@@ -88,9 +84,31 @@
             </c:if>
 
             <c:if test="${not empty sessionScope.user && sessionScope.user.id != product.sellerId && product.status == 1}">
-                <a href="/order/create?productId=${product.id}" class="btn btn-primary btn-lg w-100">
-                    <i class="bi bi-cart"></i> 立即购买
-                </a>
+                <div class="d-flex gap-2">
+                    <form id="favoriteForm" style="flex: 1;">
+                        <input type="hidden" name="productId" value="${product.id}">
+                        <button type="button" id="favoriteBtn" class="btn btn-outline-danger btn-lg w-100" onclick="toggleFavorite()">
+                            <i class="bi bi-heart"></i> 收藏
+                        </button>
+                    </form>
+                    <form id="cartForm" style="flex: 1;">
+                        <input type="hidden" name="productId" value="${product.id}">
+                        <button type="button" id="cartBtn" class="btn btn-outline-primary btn-lg w-100" onclick="addToCart()">
+                            <i class="bi bi-cart-plus"></i> 加入购物车
+                        </button>
+                    </form>
+                    <c:set var="sid1" value="${sessionScope.user.id < product.sellerId ? sessionScope.user.id : product.sellerId}"/>
+                    <c:set var="sid2" value="${sessionScope.user.id > product.sellerId ? sessionScope.user.id : product.sellerId}"/>
+                    <a href="/message/${sid1}_${sid2}" class="btn btn-outline-success btn-lg" style="flex: 1;">
+                        <i class="bi bi-chat-dots"></i> 私信卖家
+                    </a>
+                </div>
+                <form method="post" action="/order/create" class="mt-2">
+                    <input type="hidden" name="productId" value="${product.id}">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-bag-check"></i> 立即购买
+                    </button>
+                </form>
             </c:if>
             <c:if test="${empty sessionScope.user}">
                 <a href="/login" class="btn btn-outline-primary btn-lg w-100">
@@ -100,4 +118,82 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleFavorite() {
+    fetch('/favorite/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'productId=${product.id}'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 200) {
+            const btn = document.getElementById('favoriteBtn');
+            btn.innerHTML = '<i class="bi bi-heart-fill"></i> 已收藏';
+            btn.className = 'btn btn-danger btn-lg w-100';
+            btn.onclick = removeFavorite;
+            alert('收藏成功');
+        } else if (data.message && data.message.includes('已收藏')) {
+            removeFavorite();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('操作失败');
+    });
+}
+
+function removeFavorite() {
+    fetch('/favorite/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'productId=${product.id}'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 200) {
+            const btn = document.getElementById('favoriteBtn');
+            btn.innerHTML = '<i class="bi bi-heart"></i> 收藏';
+            btn.className = 'btn btn-outline-danger btn-lg w-100';
+            btn.onclick = toggleFavorite;
+            alert('取消收藏成功');
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('操作失败');
+    });
+}
+
+function addToCart() {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'productId=${product.id}'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 200) {
+            const btn = document.getElementById('cartBtn');
+            btn.innerHTML = '<i class="bi bi-cart-check"></i> 已加入购物车';
+            btn.className = 'btn btn-success btn-lg w-100';
+            btn.onclick = function() { location.href = '/cart'; };
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('操作失败');
+    });
+}
+</script>
 <%@ include file="../common/footer.jsp" %>
