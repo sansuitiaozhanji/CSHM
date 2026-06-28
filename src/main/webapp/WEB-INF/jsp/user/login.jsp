@@ -20,9 +20,9 @@
                     </c:if>
                     <form action="/login" method="post">
                         <div class="mb-3">
-                            <label for="account" class="form-label">学号 / 邮箱</label>
+                            <label for="account" class="form-label">用户名 / 手机号</label>
                             <input type="text" class="form-control" id="account" name="account"
-                                   placeholder="请输入学号或邮箱" required autofocus>
+                                   placeholder="请输入用户名或手机号" required autofocus>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">密码</label>

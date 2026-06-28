@@ -69,7 +69,7 @@ public class AuthController {
     public String logout(HttpSession session, HttpServletRequest request) {
         User user = (User) session.getAttribute("user");
         if (user != null) {
-            logService.log(user.getId(), "LOGOUT", "用户 " + user.getStudentId() + " 退出登录", request.getRemoteAddr());
+            logService.log(user.getId(), "LOGOUT", "用户 " + user.getUsername() + " 退出登录", request.getRemoteAddr());
         }
         session.invalidate();
         return "redirect:/login";

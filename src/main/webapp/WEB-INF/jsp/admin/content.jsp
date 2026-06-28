@@ -194,8 +194,26 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label class="form-label">选择本地图片</label>
+                        <input type="file" class="form-control" id="carImageFile" accept="image/*"
+                               onchange="uploadCarouselImage()">
+                        <div id="carUploadProgress" class="text-muted small mt-1 d-none">
+                            <span class="spinner-border spinner-border-sm"></span> 上传中...
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">图片URL</label>
-                        <input type="text" class="form-control" name="imageUrl" id="carImageUrl" required>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="imageUrl" id="carImageUrl"
+                                   placeholder="选择本地图片自动填入，或手动输入URL" required>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    onclick="document.getElementById('carImageFile').click()">
+                                <i class="bi bi-folder2-open"></i>
+                            </button>
+                        </div>
+                        <div id="carImagePreview" class="mt-2 d-none">
+                            <img src="" style="width:100%;max-height:150px;object-fit:cover;border-radius:4px;">
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">跳转链接（可选）</label>
@@ -243,7 +261,44 @@ function editCarousel(id, imageUrl, linkUrl, title, sortOrder, status) {
     document.getElementById('carTitleInput').value = title || '';
     document.getElementById('carSortOrder').value = sortOrder;
     document.getElementById('carStatus').value = status;
+    if (imageUrl) {
+        document.getElementById('carImagePreview').classList.remove('d-none');
+        document.getElementById('carImagePreview').querySelector('img').src = imageUrl;
+    } else {
+        document.getElementById('carImagePreview').classList.add('d-none');
+    }
+    document.getElementById('carImageFile').value = '';
+    document.getElementById('carUploadProgress').classList.add('d-none');
     new bootstrap.Modal(document.getElementById('carouselModal')).show();
+}
+
+function uploadCarouselImage() {
+    const fileInput = document.getElementById('carImageFile');
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const progressEl = document.getElementById('carUploadProgress');
+    progressEl.classList.remove('d-none');
+
+    fetch('/api/upload', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            progressEl.classList.add('d-none');
+            if (data.code === 200) {
+                document.getElementById('carImageUrl').value = data.data;
+                document.getElementById('carImagePreview').classList.remove('d-none');
+                document.getElementById('carImagePreview').querySelector('img').src = data.data;
+            } else {
+                alert('上传失败：' + (data.message || '未知错误'));
+            }
+        })
+        .catch(err => {
+            progressEl.classList.add('d-none');
+            alert('上传失败：' + err.message);
+        });
 }
 </script>
 <%@ include file="../common/footer.jsp" %>

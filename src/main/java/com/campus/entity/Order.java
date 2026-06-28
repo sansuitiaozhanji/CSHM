@@ -2,8 +2,11 @@ package com.campus.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Order {
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private Long id;
     private Long productId;
     private Long buyerId;
@@ -17,7 +20,6 @@ public class Order {
     private LocalDateTime updatedAt;
     private LocalDateTime completedAt;
 
-    // 关联字段（非数据库字段）
     private Product product;
     private User buyer;
     private User seller;
@@ -53,15 +55,22 @@ public class Order {
     public User getSeller() { return seller; }
     public void setSeller(User seller) { this.seller = seller; }
 
-    // 辅助方法：获取状态描述
     public String getStatusText() {
         if (status == null) return "";
         return switch (status) {
-            case 0 -> "待确认";
-            case 1 -> "进行中";
+            case 0 -> "待付款";
+            case 1 -> "待自提";
             case 2 -> "已完成";
             case 3 -> "已取消";
             default -> "";
         };
+    }
+
+    public String getCreatedAtStr() {
+        return createdAt != null ? createdAt.format(FMT) : "";
+    }
+
+    public String getCompletedAtStr() {
+        return completedAt != null ? completedAt.format(FMT) : "";
     }
 }

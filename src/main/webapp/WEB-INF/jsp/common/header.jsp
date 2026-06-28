@@ -49,6 +49,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/my/favorites"><i class="bi bi-heart"></i> 我的收藏</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/wallet">
+                            <i class="bi bi-wallet2"></i> 钱包
+                            <span class="badge bg-light text-primary ms-1">¥${sessionScope.user.balance}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/message">
+                            <i class="bi bi-chat-dots"></i> 私信
+                        </a>
+                    </li>
                     <c:if test="${sessionScope.user.role == 1}">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -71,10 +82,10 @@
                     <c:when test="${sessionScope.user != null}">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i> ${sessionScope.user.name}
+                                <i class="bi bi-person-circle"></i> ${sessionScope.user.username}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/user/profile">个人中心</a></li>
+                                <li><a class="dropdown-item" href="/profile">个人中心</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/logout">退出登录</a></li>
                             </ul>

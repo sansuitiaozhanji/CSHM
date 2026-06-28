@@ -180,4 +180,17 @@ public class ProductController {
             return Result.error(500, "上传失败：" + e.getMessage());
         }
     }
+
+    @PostMapping("/product/delete/{id}")
+    public String delete(@PathVariable Long id, HttpSession session, RedirectAttributes attr) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        String error = productService.delete(id, user.getId());
+        if (error != null) {
+            attr.addFlashAttribute("error", error);
+        } else {
+            attr.addFlashAttribute("msg", "商品已删除");
+        }
+        return "redirect:/my/products";
+    }
 }

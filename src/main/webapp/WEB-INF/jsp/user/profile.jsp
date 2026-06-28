@@ -25,26 +25,19 @@
                 <div class="card-body">
                     <form action="/profile/update" method="post">
                         <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label text-muted">学号</label>
-                                <input type="text" class="form-control" value="${user.studentId}" readonly>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">用户名</label>
+                                <input type="text" class="form-control" value="${user.username}" readonly>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-muted">邮箱</label>
-                                <input type="text" class="form-control" value="${user.email}" readonly>
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label text-muted">钱包余额</label>
                                 <input type="text" class="form-control fw-bold text-primary" value="¥${user.balance}" readonly>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">姓名</label>
-                            <input type="text" class="form-control" id="name" name="name" value="${user.name}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">联系电话</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="${user.phone}">
+                            <label for="phone" class="form-label">手机号</label>
+                            <input type="text" class="form-control" id="phone" name="phone"
+                                   value="${user.phone}" placeholder="请输入11位手机号" maxlength="11">
                         </div>
                         <button type="submit" class="btn btn-primary">保存修改</button>
                     </form>

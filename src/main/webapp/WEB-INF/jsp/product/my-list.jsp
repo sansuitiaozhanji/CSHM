@@ -37,7 +37,7 @@
                             </div>
                             <p class="card-text text-danger fw-bold fs-4">¥${p.price}</p>
                             <p class="card-text">
-                                <small class="text-muted">${p.conditionText} · ${p.createdAt.toLocalDate()}</small>
+                                <small class="text-muted">${p.conditionText} · ${p.createdAtStr}</small>
                             </p>
                             <c:if test="${p.status == 3 && not empty p.rejectReason}">
                                 <div class="alert alert-danger py-2 small">
@@ -78,6 +78,12 @@
                                         </button>
                                     </form>
                                 </c:if>
+                                <form method="post" action="/product/delete/${p.id}" class="flex-grow-1"
+                                      onsubmit="return confirm('确定删除「${p.title}」？删除后不可恢复。')">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                        <i class="bi bi-trash"></i> 删除
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

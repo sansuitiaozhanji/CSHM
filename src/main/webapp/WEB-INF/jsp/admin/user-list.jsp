@@ -21,7 +21,7 @@
         <div class="card-body">
             <form action="/admin/users" method="get" class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" name="keyword" placeholder="搜索学号、姓名或邮箱" value="${keyword}">
+                    <input type="text" class="form-control" name="keyword" placeholder="搜索用户名或手机号" value="${keyword}">
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary">搜索</button>
@@ -34,9 +34,8 @@
                     <thead class="table-light">
                         <tr>
                             <th>ID</th>
-                            <th>学号</th>
-                            <th>姓名</th>
-                            <th>邮箱</th>
+                            <th>用户名</th>
+                            <th>手机号</th>
                             <th>余额</th>
                             <th>角色</th>
                             <th>状态</th>
@@ -48,9 +47,8 @@
                         <c:forEach items="${users}" var="u">
                             <tr>
                                 <td>${u.id}</td>
-                                <td>${u.studentId}</td>
-                                <td>${u.name}</td>
-                                <td>${u.email}</td>
+                                <td>${u.username}</td>
+                                <td>${u.phone}</td>
                                 <td class="fw-bold text-primary">¥${u.balance}</td>
                                 <td>
                                     <c:choose>
@@ -101,7 +99,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <p>用户：${u.name} (${u.studentId})</p>
+                                                            <p>用户：${u.username} (${u.phone})</p>
                                                             <p>当前余额：¥${u.balance}</p>
                                                             <div class="mb-3">
                                                                 <label class="form-label">充值金额</label>

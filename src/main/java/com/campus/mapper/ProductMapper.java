@@ -26,6 +26,8 @@ public interface ProductMapper {
     long countForList(@Param("keyword") String keyword,
                       @Param("categoryId") Long categoryId);
 
+    long countAll(Integer status);
+
     int insert(Product product);
 
     int update(Product product);

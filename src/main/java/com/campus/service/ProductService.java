@@ -198,4 +198,18 @@ public class ProductService {
         productMapper.updateStatus(id, 0, null);
         return null;
     }
+
+    @Transactional
+    public String delete(Long id, Long userId) {
+        Product product = productMapper.findById(id);
+        if (product == null) {
+            return "商品不存在";
+        }
+        if (!product.getSellerId().equals(userId)) {
+            return "无权删除此商品";
+        }
+        // 软删除：标记为已删除(status=4)，保留图片和外键关联
+        productMapper.updateStatus(id, 4, null);
+        return null;
+    }
 }

@@ -121,7 +121,7 @@
                             <div class="card-footer bg-white border-top-0">
                                 <div class="d-flex justify-content-between align-items-center text-muted small">
                                     <span><i class="bi bi-person"></i> ${p.seller.name}</span>
-                                    <span><i class="bi bi-calendar"></i> ${p.createdAt.toLocalDate()}</span>
+                                    <span><i class="bi bi-calendar"></i> ${p.createdAtStr}</span>
                                 </div>
                             </div>
                         </div>

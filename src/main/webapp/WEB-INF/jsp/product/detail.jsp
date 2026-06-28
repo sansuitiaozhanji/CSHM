@@ -64,16 +64,12 @@
                         <i class="bi bi-person-circle"></i> 卖家信息
                     </h5>
                     <div class="row">
-                        <div class="col-sm-4"><strong>姓名：</strong></div>
-                        <div class="col-sm-8">${product.seller.name}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4"><strong>学号：</strong></div>
-                        <div class="col-sm-8">${product.seller.studentId}</div>
+                        <div class="col-sm-4"><strong>用户名：</strong></div>
+                        <div class="col-sm-8">${product.seller.username}</div>
                     </div>
                     <c:if test="${not empty product.seller.phone}">
                         <div class="row">
-                            <div class="col-sm-4"><strong>联系电话：</strong></div>
+                            <div class="col-sm-4"><strong>手机号：</strong></div>
                             <div class="col-sm-8">${product.seller.phone}</div>
                         </div>
                     </c:if>
@@ -101,6 +97,11 @@
                             <i class="bi bi-cart-plus"></i> 加入购物车
                         </button>
                     </form>
+                    <c:set var="sid1" value="${sessionScope.user.id < product.sellerId ? sessionScope.user.id : product.sellerId}"/>
+                    <c:set var="sid2" value="${sessionScope.user.id > product.sellerId ? sessionScope.user.id : product.sellerId}"/>
+                    <a href="/message/${sid1}_${sid2}" class="btn btn-outline-success btn-lg" style="flex: 1;">
+                        <i class="bi bi-chat-dots"></i> 私信卖家
+                    </a>
                 </div>
                 <form method="post" action="/order/create" class="mt-2">
                     <input type="hidden" name="productId" value="${product.id}">
@@ -182,7 +183,10 @@ function addToCart() {
     .then(response => response.json())
     .then(data => {
         if (data.code === 200) {
-            alert('加入购物车成功');
+            const btn = document.getElementById('cartBtn');
+            btn.innerHTML = '<i class="bi bi-cart-check"></i> 已加入购物车';
+            btn.className = 'btn btn-success btn-lg w-100';
+            btn.onclick = function() { location.href = '/cart'; };
         } else {
             alert(data.message);
         }

@@ -24,4 +24,8 @@ public interface OrderMapper {
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
 
     int deleteById(Long id);
+
+    long countAll();
+
+    long countByStatus(@Param("status") Integer status);
 }

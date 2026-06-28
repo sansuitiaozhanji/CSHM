@@ -10,9 +10,9 @@ public interface UserMapper {
 
     User findById(Long id);
 
-    User findByStudentId(String studentId);
+    User findByUsername(String username);
 
-    User findByEmail(String email);
+    User findByPhone(String phone);
 
     User findByAccount(String account);
 
@@ -27,4 +27,8 @@ public interface UserMapper {
     List<User> findAll(@Param("keyword") String keyword);
 
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
+
+    long countAll();
+
+    long countByStatus(@Param("status") Integer status);
 }

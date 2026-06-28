@@ -1,8 +1,10 @@
 package com.campus.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Message {
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private Long id;
     private String sessionId;
     private Long senderId;
@@ -38,5 +40,9 @@ public class Message {
     public String getIsReadText() {
         if (isRead == null) return "";
         return isRead == 1 ? "已读" : "未读";
+    }
+
+    public String getCreatedAtStr() {
+        return createdAt != null ? createdAt.format(FMT) : "";
     }
 }

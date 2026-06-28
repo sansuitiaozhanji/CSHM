@@ -2,9 +2,11 @@ package com.campus.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Product {
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private Long id;
     private Long sellerId;
     private Long categoryId;
@@ -74,7 +76,12 @@ public class Product {
             case 1 -> "已上架";
             case 2 -> "已下架";
             case 3 -> "审核驳回";
+            case 4 -> "已删除";
             default -> "";
         };
+    }
+
+    public String getCreatedAtStr() {
+        return createdAt != null ? createdAt.format(FMT) : "";
     }
 }

@@ -75,4 +75,72 @@ public class WalletService {
 
         return null;
     }
+
+    @Transactional
+    public String pay(Long userId, Long orderId, BigDecimal amount) {
+        User user = userMapper.findById(userId);
+        if (user == null) return "用户不存在";
+        if (user.getBalance().compareTo(amount) < 0) {
+            return "余额不足，请联系管理员充值";
+        }
+
+        BigDecimal before = user.getBalance();
+        BigDecimal after = before.subtract(amount);
+
+        userMapper.updateBalance(userId, after);
+
+        TransactionLog tlog = new TransactionLog();
+        tlog.setUserId(userId);
+        tlog.setOrderId(orderId);
+        tlog.setType("PAY");
+        tlog.setAmount(amount.negate());
+        tlog.setBalanceBefore(before);
+        tlog.setBalanceAfter(after);
+        tlog.setDescription("订单支付 #" + orderId);
+        transactionLogMapper.insert(tlog);
+
+        return null;
+    }
+
+    @Transactional
+    public void income(Long userId, Long orderId, BigDecimal amount) {
+        User user = userMapper.findById(userId);
+        if (user == null) return;
+
+        BigDecimal before = user.getBalance();
+        BigDecimal after = before.add(amount);
+
+        userMapper.updateBalance(userId, after);
+
+        TransactionLog tlog = new TransactionLog();
+        tlog.setUserId(userId);
+        tlog.setOrderId(orderId);
+        tlog.setType("INCOME");
+        tlog.setAmount(amount);
+        tlog.setBalanceBefore(before);
+        tlog.setBalanceAfter(after);
+        tlog.setDescription("订单入账 #" + orderId);
+        transactionLogMapper.insert(tlog);
+    }
+
+    @Transactional
+    public void refund(Long userId, Long orderId, BigDecimal amount) {
+        User user = userMapper.findById(userId);
+        if (user == null) return;
+
+        BigDecimal before = user.getBalance();
+        BigDecimal after = before.add(amount);
+
+        userMapper.updateBalance(userId, after);
+
+        TransactionLog tlog = new TransactionLog();
+        tlog.setUserId(userId);
+        tlog.setOrderId(orderId);
+        tlog.setType("REFUND");
+        tlog.setAmount(amount);
+        tlog.setBalanceBefore(before);
+        tlog.setBalanceAfter(after);
+        tlog.setDescription("订单退款 #" + orderId);
+        transactionLogMapper.insert(tlog);
+    }
 }

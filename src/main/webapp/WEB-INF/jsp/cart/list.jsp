@@ -68,18 +68,6 @@
                                                     </c:if>
                                                     <p class="text-danger fw-bold mb-2 mt-2">¥${cart.product.price}</p>
                                                     <c:if test="${cart.product.status == 1}">
-                                                        <div class="d-flex align-items-center">
-                                                            <span class="me-2">数量：</span>
-                                                            <div class="input-group" style="width: 140px;">
-                                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(${cart.id}, ${cart.quantity - 1})">
-                                                                    <i class="bi bi-dash"></i>
-                                                                </button>
-                                                                <input type="number" class="form-control form-control-sm text-center" value="${cart.quantity}" min="1" id="qty-${cart.id}" onchange="updateQuantity(${cart.id}, this.value)">
-                                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(${cart.id}, ${cart.quantity + 1})">
-                                                                    <i class="bi bi-plus"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
                                                     </c:if>
                                                 </div>
                                                 <div class="text-end">
@@ -115,37 +103,16 @@
                             <span class="fw-bold">应付总额</span>
                             <span class="fw-bold text-danger fs-4">¥${total}</span>
                         </div>
-                        <button class="btn btn-primary btn-lg w-100" disabled>
-                            <i class="bi bi-check-circle"></i> 去结算（功能开发中）
-                        </button>
+                        <form method="post" action="/cart/checkout">
+                            <button type="submit" class="btn btn-primary btn-lg w-100"
+                                    onclick="return confirm('确认提交订单？总金额 ¥${total}')">
+                                <i class="bi bi-check-circle"></i> 去结算
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </c:if>
 </div>
-
-<script>
-function updateQuantity(id, qty) {
-    if (qty < 1) return;
-    fetch('/cart/update/' + id, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'quantity=' + qty
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.code === 200) {
-            window.location.reload();
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => {
-        alert('操作失败');
-    });
-}
-</script>
 <%@ include file="../common/footer.jsp" %>

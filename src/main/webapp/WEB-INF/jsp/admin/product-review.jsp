@@ -68,8 +68,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div>${p.seller.name}</div>
-                                <small class="text-muted">${p.seller.studentId}</small>
+                                <div>${p.seller.username}</div>
                             </td>
                             <td class="text-danger fw-bold">¥${p.price}</td>
                             <td>
@@ -77,7 +76,7 @@
                                         ${p.statusText}
                                 </span>
                             </td>
-                            <td>${p.createdAt.toLocalDate()}</td>
+                            <td>${p.createdAtStr}</td>
                             <td>
                                 <c:if test="${p.status == 0}">
                                     <form method="post" action="/admin/products/${p.id}/approve" class="d-inline">

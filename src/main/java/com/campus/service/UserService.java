@@ -22,23 +22,20 @@ public class UserService {
     }
 
     public String register(User user, String ip) {
-        if (user.getStudentId() == null || user.getStudentId().isBlank()) {
-            return "学号不能为空";
+        if (user.getUsername() == null || !user.getUsername().matches("^[a-zA-Z][a-zA-Z0-9]{2,19}$")) {
+            return "用户名必须以字母开头，3-20位字母或数字";
         }
-        if (user.getName() == null || user.getName().isBlank()) {
-            return "姓名不能为空";
-        }
-        if (user.getEmail() == null || !user.getEmail().matches("^[\\w.+-]+@[\\w-]+\\.edu\\.cn$")) {
-            return "邮箱格式不正确，需为学校邮箱（@xx.edu.cn）";
+        if (user.getPhone() == null || !user.getPhone().matches("^\\d{11}$")) {
+            return "手机号必须为11位数字";
         }
         if (user.getPassword() == null || user.getPassword().length() < 6) {
             return "密码不能少于6位";
         }
-        if (userMapper.findByStudentId(user.getStudentId()) != null) {
-            return "该学号已被注册";
+        if (userMapper.findByUsername(user.getUsername()) != null) {
+            return "该用户名已被注册";
         }
-        if (userMapper.findByEmail(user.getEmail()) != null) {
-            return "该邮箱已被注册";
+        if (userMapper.findByPhone(user.getPhone()) != null) {
+            return "该手机号已被注册";
         }
 
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
@@ -48,7 +45,7 @@ public class UserService {
         userMapper.insert(user);
 
         walletService.initBalance(user.getId());
-        logService.log(user.getId(), "REGISTER", "用户 " + user.getName() + " 注册成功", ip);
+        logService.log(user.getId(), "REGISTER", "用户 " + user.getUsername() + " 注册成功", ip);
 
         return null;
     }
@@ -62,14 +59,14 @@ public class UserService {
             return null;
         }
         if (user.getStatus() == 0) {
-            logService.log(user.getId(), "LOGIN_FAIL", "账号 " + user.getStudentId() + " 已被禁用，登录失败", ip);
+            logService.log(user.getId(), "LOGIN_FAIL", "账号 " + user.getUsername() + " 已被禁用，登录失败", ip);
             return null;
         }
         if (!BCrypt.checkpw(password, user.getPassword())) {
-            logService.log(user.getId(), "LOGIN_FAIL", "用户 " + user.getStudentId() + " 密码错误", ip);
+            logService.log(user.getId(), "LOGIN_FAIL", "用户 " + user.getUsername() + " 密码错误", ip);
             return null;
         }
-        logService.log(user.getId(), "LOGIN", "用户 " + user.getStudentId() + " 登录成功", ip);
+        logService.log(user.getId(), "LOGIN", "用户 " + user.getUsername() + " 登录成功", ip);
         return user;
     }
 
@@ -78,8 +75,8 @@ public class UserService {
     }
 
     public String updateProfile(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            return "姓名不能为空";
+        if (user.getPhone() != null && !user.getPhone().isBlank() && !user.getPhone().matches("^\\d{11}$")) {
+            return "手机号必须为11位数字";
         }
         userMapper.update(user);
         return null;

@@ -1,8 +1,10 @@
 package com.campus.service;
 
 import com.campus.entity.Cart;
+import com.campus.entity.Order;
 import com.campus.entity.Product;
 import com.campus.mapper.CartMapper;
+import com.campus.mapper.OrderMapper;
 import com.campus.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +17,12 @@ public class CartService {
 
     private final CartMapper cartMapper;
     private final ProductMapper productMapper;
+    private final OrderMapper orderMapper;
 
-    public CartService(CartMapper cartMapper, ProductMapper productMapper) {
+    public CartService(CartMapper cartMapper, ProductMapper productMapper, OrderMapper orderMapper) {
         this.cartMapper = cartMapper;
         this.productMapper = productMapper;
+        this.orderMapper = orderMapper;
     }
 
     public List<Cart> findByUserId(Long userId) {
@@ -101,6 +105,38 @@ public class CartService {
 
     @Transactional
     public String clear(Long userId) {
+        cartMapper.deleteByUserId(userId);
+        return null;
+    }
+
+    @Transactional
+    public String checkout(Long userId) {
+        List<Cart> carts = cartMapper.findByUserId(userId);
+        if (carts.isEmpty()) {
+            return "购物车为空";
+        }
+
+        for (Cart cart : carts) {
+            Product product = cart.getProduct();
+            if (product == null || product.getStatus() != 1) {
+                return "商品「" + (product != null ? product.getTitle() : "未知") + "」已下架，请先移除";
+            }
+            if (product.getSellerId().equals(userId)) {
+                return "不能购买自己的商品「" + product.getTitle() + "」";
+            }
+
+            Order order = new Order();
+            order.setProductId(cart.getProductId());
+            order.setBuyerId(userId);
+            order.setSellerId(product.getSellerId());
+            order.setQuantity(cart.getQuantity());
+            order.setPrice(product.getPrice());
+            order.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())));
+            orderMapper.insert(order);
+
+            productMapper.updateStatus(cart.getProductId(), 2, null);
+        }
+
         cartMapper.deleteByUserId(userId);
         return null;
     }

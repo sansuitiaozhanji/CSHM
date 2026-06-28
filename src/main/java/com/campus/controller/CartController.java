@@ -86,15 +86,22 @@ public class CartController {
     @PostMapping("/cart/clear")
     public String clear(HttpSession session, RedirectAttributes attr) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        String error = cartService.clear(user.getId());
+        if (user == null) return "redirect:/login";
+        cartService.clear(user.getId());
+        attr.addFlashAttribute("msg", "购物车已清空");
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String checkout(HttpSession session, RedirectAttributes attr) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        String error = cartService.checkout(user.getId());
         if (error != null) {
             attr.addFlashAttribute("error", error);
-        } else {
-            attr.addFlashAttribute("msg", "清空成功");
+            return "redirect:/cart";
         }
-        return "redirect:/cart";
+        attr.addFlashAttribute("msg", "下单成功，请尽快支付");
+        return "redirect:/my/orders/buy";
     }
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="../common/header.jsp" %>
+
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="bi bi-chat-dots"></i> 私信</h4>
@@ -61,7 +62,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </h6>
-                                    <small class="text-muted">${msg.createdAt}</small>
+                                    <small class="text-muted">${msg.createdAtStr}</small>
                                 </div>
                                 <p class="mb-1 text-muted text-truncate">
                                     <c:if test="${msg.senderId == currentUserId}">我：</c:if>
@@ -78,4 +79,8 @@
         </div>
     </c:if>
 </div>
+<script>
+var evtSource = new EventSource('/message/stream');
+evtSource.addEventListener('new-message', function() { location.reload(); });
+</script>
 <%@ include file="../common/footer.jsp" %>

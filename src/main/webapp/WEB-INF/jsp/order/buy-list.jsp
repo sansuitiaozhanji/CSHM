@@ -34,7 +34,7 @@
                             </div>
                             <p class="card-text text-danger fw-bold fs-4">¥${o.price}</p>
                             <p class="card-text">
-                                <small class="text-muted">卖家：${o.seller.name} · ${o.createdAt.toLocalDate()}</small>
+                                <small class="text-muted">卖家：${o.seller.name} · ${o.createdAtStr}</small>
                             </p>
                         </div>
                         <div class="card-footer bg-white border-top-0">

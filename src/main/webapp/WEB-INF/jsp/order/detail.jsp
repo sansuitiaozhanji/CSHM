@@ -67,26 +67,24 @@
                     </c:if>
                     <div class="row mb-3">
                         <div class="col-sm-4"><strong>下单时间：</strong></div>
-                        <div class="col-sm-8">${order.createdAt}</div>
+                        <div class="col-sm-8">${order.createdAtStr}</div>
                     </div>
-                    <c:if test="${not empty order.completedAt}">
+                    <c:if test="${not empty order.completedAtStr}">
                         <div class="row mb-3">
                             <div class="col-sm-4"><strong>完成时间：</strong></div>
-                            <div class="col-sm-8">${order.completedAt}</div>
+                            <div class="col-sm-8">${order.completedAtStr}</div>
                         </div>
                     </c:if>
                 </div>
             </div>
 
             <div class="d-flex gap-2">
-                <c:if test="${order.status == 0 && order.sellerId == currentUserId}">
-                    <form method="post" action="/order/confirm/${order.id}">
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-circle"></i> 确认订单
+                <c:if test="${order.status == 0 && order.buyerId == currentUserId}">
+                    <form method="post" action="/order/pay/${order.id}">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-credit-card"></i> 立即支付 ¥${order.totalPrice}
                         </button>
                     </form>
-                </c:if>
-                <c:if test="${order.status == 0 && (order.buyerId == currentUserId || order.sellerId == currentUserId)}">
                     <form method="post" action="/order/cancel/${order.id}">
                         <button type="submit" class="btn btn-secondary" onclick="return confirm('确定要取消订单吗？')">
                             <i class="bi bi-x-circle"></i> 取消订单
@@ -95,8 +93,8 @@
                 </c:if>
                 <c:if test="${order.status == 1 && order.buyerId == currentUserId}">
                     <form method="post" action="/order/complete/${order.id}">
-                        <button type="submit" class="btn btn-success" onclick="return confirm('确定已完成交易吗？')">
-                            <i class="bi bi-check2-circle"></i> 确认完成
+                        <button type="submit" class="btn btn-success" onclick="return confirm('确认已收到商品？卖家将收到款项。')">
+                            <i class="bi bi-check2-circle"></i> 确认收货
                         </button>
                     </form>
                 </c:if>
@@ -125,8 +123,7 @@
                         </c:if>
                         <div>
                             <c:if test="${not empty order.buyer}">
-                                <div class="fw-bold">${order.buyer.name}</div>
-                                <div class="small text-muted">学号：${order.buyer.studentId}</div>
+                                <div class="fw-bold">${order.buyer.username}</div>
                                 <c:if test="${order.sellerId == currentUserId && not empty order.buyer.phone}">
                                     <div class="small">手机：${order.buyer.phone}</div>
                                 </c:if>
@@ -152,8 +149,7 @@
                         </c:if>
                         <div>
                             <c:if test="${not empty order.seller}">
-                                <div class="fw-bold">${order.seller.name}</div>
-                                <div class="small text-muted">学号：${order.seller.studentId}</div>
+                                <div class="fw-bold">${order.seller.username}</div>
                                 <c:if test="${order.buyerId == currentUserId && not empty order.seller.phone}">
                                     <div class="small">手机：${order.seller.phone}</div>
                                 </c:if>

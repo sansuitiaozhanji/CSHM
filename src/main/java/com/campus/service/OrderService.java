@@ -7,7 +7,6 @@ import com.campus.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -15,10 +14,12 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
     private final ProductMapper productMapper;
+    private final WalletService walletService;
 
-    public OrderService(OrderMapper orderMapper, ProductMapper productMapper) {
+    public OrderService(OrderMapper orderMapper, ProductMapper productMapper, WalletService walletService) {
         this.orderMapper = orderMapper;
         this.productMapper = productMapper;
+        this.walletService = walletService;
     }
 
     public Order findById(Long id) {
@@ -46,12 +47,6 @@ public class OrderService {
             return "不能购买自己的商品";
         }
 
-        // 检查是否有活跃订单
-        Order activeOrder = orderMapper.findActiveByProductId(productId);
-        if (activeOrder != null) {
-            return "该商品已有进行中的订单";
-        }
-
         Order order = new Order();
         order.setProductId(productId);
         order.setBuyerId(buyerId);
@@ -63,23 +58,28 @@ public class OrderService {
 
         orderMapper.insert(order);
 
-        // 商品自动下架
+        // 下单后商品下架，防止重复购买
         productMapper.updateStatus(productId, 2, null);
 
         return null;
     }
 
     @Transactional
-    public String confirm(Long orderId, Long userId) {
+    public String pay(Long orderId, Long userId) {
         Order order = orderMapper.findById(orderId);
         if (order == null) {
             return "订单不存在";
         }
-        if (!order.getSellerId().equals(userId)) {
+        if (!order.getBuyerId().equals(userId)) {
             return "无权操作此订单";
         }
         if (order.getStatus() != 0) {
-            return "只有待确认状态的订单才能确认";
+            return "只有待付款状态的订单才能支付";
+        }
+
+        String err = walletService.pay(userId, orderId, order.getTotalPrice());
+        if (err != null) {
+            return err;
         }
 
         orderMapper.updateStatus(orderId, 1);
@@ -96,7 +96,7 @@ public class OrderService {
             return "无权操作此订单";
         }
         if (order.getStatus() != 0) {
-            return "只有待确认状态的订单才能取消";
+            return "只有待付款状态的订单才能取消";
         }
 
         orderMapper.updateStatus(orderId, 3);
@@ -117,10 +117,14 @@ public class OrderService {
             return "无权操作此订单";
         }
         if (order.getStatus() != 1) {
-            return "只有进行中状态的订单才能完成";
+            return "只有待自提状态的订单才能确认收货";
         }
 
         orderMapper.updateStatus(orderId, 2);
+
+        // 卖家入账
+        walletService.income(order.getSellerId(), orderId, order.getTotalPrice());
+
         return null;
     }
 }

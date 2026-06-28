@@ -13,10 +13,12 @@ public class MessageService {
 
     private final MessageMapper messageMapper;
     private final UserMapper userMapper;
+    private final SseService sseService;
 
-    public MessageService(MessageMapper messageMapper, UserMapper userMapper) {
+    public MessageService(MessageMapper messageMapper, UserMapper userMapper, SseService sseService) {
         this.messageMapper = messageMapper;
         this.userMapper = userMapper;
+        this.sseService = sseService;
     }
 
     public List<Message> findBySessionId(String sessionId) {
@@ -59,6 +61,9 @@ public class MessageService {
         message.setContent(content);
 
         messageMapper.insert(message);
+
+        // 通知接收方有新消息
+        sseService.notify(receiverId);
 
         return null;
     }
