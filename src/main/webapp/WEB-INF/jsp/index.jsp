@@ -47,16 +47,22 @@
                     <a href="/product/${p.id}" class="text-decoration-none text-dark">
                         <div class="card h-100 product-card shadow-sm">
                             <div class="position-relative">
-                                <c:if test="${not empty p.images}">
-                                    <img src="${p.images[0].url}" class="card-img-top"
-                                         style="height: 200px; object-fit: cover;">
-                                </c:if>
-                                <c:if test="${empty p.images}">
-                                    <div class="bg-light d-flex align-items-center justify-content-center"
-                                         style="height: 200px;">
-                                        <span class="text-muted"><i class="bi bi-image fs-1"></i></span>
-                                    </div>
-                                </c:if>
+                                <c:choose>
+                                    <c:when test="${not empty p.firstImageUrl}">
+                                        <img src="${p.firstImageUrl}" class="card-img-top"
+                                             style="height: 200px; object-fit: cover;">
+                                    </c:when>
+                                    <c:when test="${not empty p.images}">
+                                        <img src="${p.images[0].url}" class="card-img-top"
+                                             style="height: 200px; object-fit: cover;">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="bg-light d-flex align-items-center justify-content-center"
+                                             style="height: 200px;">
+                                            <span class="text-muted"><i class="bi bi-image fs-1"></i></span>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title text-truncate">${p.title}</h5>

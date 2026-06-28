@@ -17,13 +17,15 @@
             <result property="price" column="fav_product_price"/>
             <result property="status" column="fav_product_status"/>
             <result property="sellerId" column="fav_product_seller_id"/>
+            <result property="firstImageUrl" column="firstImageUrl"/>
         </association>
     </resultMap>
 
     <select id="findById" resultMap="favoriteDetailMap">
         SELECT f.*,
                p.id as fav_product_id, p.title as fav_product_title, p.price as fav_product_price,
-               p.status as fav_product_status, p.seller_id as fav_product_seller_id
+               p.status as fav_product_status, p.seller_id as fav_product_seller_id,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
         FROM favorite f
         LEFT JOIN product p ON f.product_id = p.id
         WHERE f.id = #{id}

@@ -12,7 +12,7 @@ spring:
       suffix: .jsp
   web:
     resources:
-      static-locations: classpath:/static/,file:uploads/
+      static-locations: classpath:/static/
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai

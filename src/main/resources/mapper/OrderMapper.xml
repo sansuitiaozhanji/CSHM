@@ -23,6 +23,7 @@
             <id property="id" column="ord_product_id"/>
             <result property="title" column="ord_product_title"/>
             <result property="status" column="ord_product_status"/>
+            <result property="firstImageUrl" column="firstImageUrl"/>
         </association>
         <association property="buyer" javaType="com.campus.entity.User">
             <id property="id" column="ord_buyer_id"/>
@@ -43,6 +44,7 @@
     <select id="findById" resultMap="orderDetailMap">
         SELECT o.*,
                p.id as ord_product_id, p.title as ord_product_title, p.status as ord_product_status,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl,
                b.id as ord_buyer_id, b.name as ord_buyer_name, b.student_id as ord_buyer_student_id,
                b.phone as ord_buyer_phone, b.avatar as ord_buyer_avatar,
                s.id as ord_seller_id, s.name as ord_seller_name, s.student_id as ord_seller_student_id,

@@ -19,13 +19,15 @@
             <result property="status" column="cart_product_status"/>
             <result property="sellerId" column="cart_product_seller_id"/>
             <result property="condition" column="cart_product_condition"/>
+            <result property="firstImageUrl" column="firstImageUrl"/>
         </association>
     </resultMap>
 
     <select id="findById" resultMap="cartDetailMap">
         SELECT c.*,
                p.id as cart_product_id, p.title as cart_product_title, p.price as cart_product_price,
-               p.status as cart_product_status, p.seller_id as cart_product_seller_id, p.condition as cart_product_condition
+               p.status as cart_product_status, p.seller_id as cart_product_seller_id, p.condition as cart_product_condition,
+               (SELECT url FROM image WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as firstImageUrl
         FROM cart c
         LEFT JOIN product p ON c.product_id = p.id
         WHERE c.id = #{id}
